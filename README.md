@@ -1,5 +1,5 @@
 # Calendar Project
-### Desenvolvimento por:
+### Desenvolvido por:
 Isadora Schutzer </br>
 João Victor da Silva </br>
 Taina Soares Sabino
