@@ -1,8 +1,9 @@
-<ion-header>
+<ion-header translucent>
   <ion-toolbar>
-    <ion-title>
-      Calendar GO
-    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login" text="Back" ></ion-back-button>
+    </ion-buttons>
+    <ion-title>Calendar Go</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,7 +14,7 @@
     </div>
 
     <ion-list-header lines="full">
-      <ion-label>Login</ion-label>
+      <ion-label>Cadastro</ion-label>
     </ion-list-header>
 
     <ion-item class="ion-margin-top" lines="none" lines="full">
@@ -32,11 +33,7 @@
       Senha obrigatória.
     </div>
 
-    <ion-button color="success" class="ion-margin-top ion-margin-start ion-margin-end" (click)="login()" expand="block">
-      Entrar
-    </ion-button>
-
-    <ion-button class="ion-margin-top ion-margin-start ion-margin-end" [routerLink]="['/signin']" expand="block">
+    <ion-button class="ion-margin-top ion-margin-start ion-margin-end" (click)="signin()" expand="block">
       Cadastrar
     </ion-button>
   </ion-list>

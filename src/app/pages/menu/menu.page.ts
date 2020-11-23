@@ -1,18 +1,28 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/interfaces/user';
+import { Router, RouterEvent } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
-import { FormGroup } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-menu',
+  templateUrl: './menu.page.html',
+  styleUrls: ['./menu.page.scss'],
 })
-export class LoginPage implements OnInit {
-  public userLogin: User = {};
+export class MenuPage implements OnInit {
+
+  private pages = [
+    {
+      title: 'Home',
+      url: '/menu/home',
+      icon: 'home'
+    },
+    {
+      title: 'Serviços',
+      url: '/menu/service',
+      icon: 'home'
+    },
+  ];
+  private selectedPath = '';
   private loading: any;
 
   constructor(
@@ -20,26 +30,28 @@ export class LoginPage implements OnInit {
     private authService: AuthService,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
-  ) { }
+  )
+  {
+    this.router.events.subscribe((event: RouterEvent) => {
+      if ( event.url ) {
+        this.selectedPath = event.url;
+      }
+    });
+  }
 
   ngOnInit() {
-    this.isUserConnected();
   }
 
-  isUserConnected() {
-    console.log(this.authService.userIsConnected());
-  }
-
-  async login() {
+  async logout() {
     await this.presentLoading();
 
     try {
-      await this.authService.login(this.userLogin);
-      this.router.navigateByUrl('/menu/home');
+      await this.authService.logout();
     } catch (error) {
       this.presentToast(error.message);
     } finally {
       this.loading.dismiss();
+      this.router.navigateByUrl('/login');
     }
   }
 

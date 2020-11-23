@@ -2,18 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/interfaces/user';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
-import { FormGroup } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-signin',
+  templateUrl: './signin.page.html',
+  styleUrls: ['./signin.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class SigninPage implements OnInit {
   public userLogin: User = {};
+  public userRegister: User = {};
   private loading: any;
+  private incorrect: boolean;
+  private form: FormGroup;
 
   constructor(
     private router: Router,
@@ -22,19 +24,13 @@ export class LoginPage implements OnInit {
     private toastCtrl: ToastController,
   ) { }
 
-  ngOnInit() {
-    this.isUserConnected();
-  }
+  ngOnInit() { }
 
-  isUserConnected() {
-    console.log(this.authService.userIsConnected());
-  }
-
-  async login() {
+  async signin() {
     await this.presentLoading();
 
     try {
-      await this.authService.login(this.userLogin);
+      await this.authService.register(this.userLogin);
       this.router.navigateByUrl('/menu/home');
     } catch (error) {
       this.presentToast(error.message);

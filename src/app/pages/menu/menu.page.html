@@ -1,0 +1,26 @@
+<ion-app>
+  <ion-menu side="start" menuId="first" contentId="content1">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Navigate</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+        <ion-menu-toggle auto-hide="false" *ngFor="let page of pages">
+          <ion-item [routerLink]="page.url" routerDirection="root" [class.active-item]="selectedPath === page.url" [class.inactive-item]="selectedPath != page.url">
+              <ion-icon [name]="page.icon" slot="start"></ion-icon>
+              {{page.title}} 
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+          <ion-item (click)="logout()">
+              <ion-icon name="power-outline" slot="start" class="inactive-item"></ion-icon>
+              Logout
+          </ion-item>
+        </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+  <ion-router-outlet id="content1"></ion-router-outlet>
+</ion-app>

@@ -13,7 +13,15 @@ export class AuthService {
     return this.db.signInWithEmailAndPassword(user.email, user.password);
   }
 
+  logout() {
+    return this.db.signOut();
+  }
+
   register(user: User) {
     return this.db.createUserWithEmailAndPassword(user.email, user.password);
+  }
+
+  userIsConnected() {
+    return this.db.user;
   }
 }

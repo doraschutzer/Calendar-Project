@@ -2,19 +2,35 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  {
-    path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },
+  // {
+  //     path: '',
+  //     redirectTo: 'menu',
+  //     pathMatch: 'full'
+  // },
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    loadChildren: () => import('./pages/menu/menu.module').then( m => m.MenuPageModule)
   },
+  // {
+  //   path: 'home',
+  //   loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  // },
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
+  {
+    path: 'signin',
+    loadChildren: () => import('./pages/signin/signin.module').then( m => m.SigninPageModule)
+  },
+  // {
+  //   path: 'service',
+  //   loadChildren: () => import('./pages/service/service.module').then( m => m.ServicePageModule)
+  // },
+  // {
+  //   path: '',
+  //   loadChildren: () => import('./pages/menu/menu.module').then( m => m.MenuPageModule)
+  // },
 ];
 
 @NgModule({
