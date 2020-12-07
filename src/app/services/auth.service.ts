@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User } from './../interfaces/user';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  public currentUser: any;
 
-  constructor(private db: AngularFireAuth) { }
+  constructor(
+    private db: AngularFireAuth
+  ) { }
 
   login(user: User) {
-    return this.db.signInWithEmailAndPassword(user.email, user.password);
+    return this.db.setPersistence('local').then(_ => {
+      return this.db.signInWithEmailAndPassword(user.email, user.password);
+    });
   }
 
   logout() {
@@ -21,7 +27,17 @@ export class AuthService {
     return this.db.createUserWithEmailAndPassword(user.email, user.password);
   }
 
-  userIsConnected() {
-    return this.db.user;
+  resetPassword(email: string) {
+    return this.db.sendPasswordResetEmail(email);
+  }
+
+  async userIsConnected(router) {
+    this.currentUser = (await this.db.onAuthStateChanged(user => {
+      if ( user ) {
+        router.navigateByUrl('/menu/home');
+      } else {
+        router.navigateByUrl('/login');
+      }
+    }));
   }
 }

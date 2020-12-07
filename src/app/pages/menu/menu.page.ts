@@ -14,12 +14,12 @@ export class MenuPage implements OnInit {
     {
       title: 'Home',
       url: '/menu/home',
-      icon: 'home'
+      icon: 'home-outline'
     },
     {
       title: 'Serviços',
       url: '/menu/service',
-      icon: 'home'
+      icon: 'briefcase-outline'
     },
   ];
   private selectedPath = '';

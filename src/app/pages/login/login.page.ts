@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/interfaces/user';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { FormGroup } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-
 
 @Component({
   selector: 'app-login',
@@ -12,7 +11,8 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  public userLogin: User = {};
+  private userLogin: User = {};
+  private userConnected: any;
   private loading: any;
 
   constructor(
@@ -20,14 +20,15 @@ export class LoginPage implements OnInit {
     private authService: AuthService,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
-    this.isUserConnected();
+    this.userIsConnected();
   }
 
-  isUserConnected() {
-    console.log(this.authService.userIsConnected());
+  async userIsConnected() {
+    await this.authService.userIsConnected(this.router);
   }
 
   async login() {
@@ -53,4 +54,45 @@ export class LoginPage implements OnInit {
     toast.present();
   }
 
+  async openToast() {
+    const alert = await this.alertCtrl.create({
+      header: 'Esqueci minha senha',
+      // subHeader: 'Subtitle',
+      message: 'Digite seu e-mail para recuperar sua senha.',
+      inputs: [
+        {
+          name: 'email',
+          placeholder: 'email'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          // handler: data => {
+          //   console.log('Cancel clicked');
+          // }
+        },
+        {
+          text: 'Enviar',
+          handler: data => {
+            this.resetPassword(data.password);
+          }
+        }
+      ],
+    });
+    await alert.present();
+  }
+
+  async resetPassword(email) {
+    if ( email ) {
+      try {
+        await this.authService.resetPassword(email);
+      } catch (error) {
+        this.presentToast(error.message);
+      }
+    } else {
+      this.presentToast('Invalid email! Try again.');
+    }
+  }
 }
