@@ -40,7 +40,7 @@ export class HomePage implements OnInit {
   }
   
   async userIsConnected() {
-    await this.authService.userIsConnected(this.router);
+    await this.authService.userIsConnected(this.router, 'HOME');
   }
 
   resetEvents() {

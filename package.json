@@ -28,7 +28,10 @@
     "auth-angular": "^0.4.5",
     "firebase": "^8.0.2",
     "ionic2-calendar": "^0.6.6",
-    "rxjs": "~6.5.5",
+    "ngx-currency": "^2.5.2",
+    "ngx-mask": "^11.1.4",
+    "ngx-mask-ionic": "^1.1.2",
+    "rxjs": "^6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
   },

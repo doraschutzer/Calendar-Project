@@ -28,7 +28,7 @@ export class LoginPage implements OnInit {
   }
 
   async userIsConnected() {
-    await this.authService.userIsConnected(this.router);
+    await this.authService.userIsConnected(this.router, 'LOGIN');
   }
 
   async login() {
@@ -57,7 +57,6 @@ export class LoginPage implements OnInit {
   async openToast() {
     const alert = await this.alertCtrl.create({
       header: 'Esqueci minha senha',
-      // subHeader: 'Subtitle',
       message: 'Digite seu e-mail para recuperar sua senha.',
       inputs: [
         {
@@ -69,9 +68,6 @@ export class LoginPage implements OnInit {
         {
           text: 'Cancel',
           role: 'cancel',
-          // handler: data => {
-          //   console.log('Cancel clicked');
-          // }
         },
         {
           text: 'Enviar',

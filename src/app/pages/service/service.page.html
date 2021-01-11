@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="!modal">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!modal">
   <ion-card *ngIf="!loading">
     <ion-card-header *ngIf="!loading" (click)="collapseUpDown()">
       <ion-card-title>Novo Serviço</ion-card-title>
@@ -17,13 +17,47 @@
     <ion-card-content *ngIf="!collapseCard" >
  
       <ion-item>
-        <ion-input type="text" placeholder="Nome" [(ngModel)]="service.name"></ion-input>
+        <input type="text" placeholder="Nome" [(ngModel)]="service.name" />
       </ion-item>
       <ion-item>
-        <ion-input type="text" placeholder="Valor" ng-pattern="onlyNumbers" [(ngModel)]="service.value"></ion-input>
+        <input currencyMask placeholder="Valor" [(ngModel)]="service.value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"/>
       </ion-item>
-      <ion-button fill="outline" expand="block" (click)="addEvent()" [disabled]="service.name == ''">Adicionar</ion-button>
+      <ion-button class="ion-margin-top" fill="outline" expand="block" (click)="addEvent()" [disabled]="!service.name || service.name === ''">Adicionar</ion-button>
     </ion-card-content>
   </ion-card>
 
+  <ion-list *ngFor="let service of this.authService.services">
+    <ion-item>
+      <ion-label>
+        <h2>{{ service.name }}</h2>
+        <p>{{ ( service.value | currency:'BRL':true ) }}</p>
+        <div class="d-flex flex-row bd-highlight">
+          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(service)">Editar</ion-button>
+          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(service)">Remover</ion-button>
+        </div>
+        <!-- <p>{{ service.value | mask: '(00) 00000-0000'}}</p> -->
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
+
+<ion-header translucent *ngIf="modal">
+  <ion-toolbar>
+    <ion-title>Editar Serviço</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen *ngIf="modal">
+
+      <ion-item>
+        <input type="text" placeholder="Nome" [(ngModel)]="serviceEditing.name" />
+      </ion-item>
+      <ion-item>
+        <input currencyMask placeholder="Valor" [(ngModel)]="serviceEditing.value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"/>
+      </ion-item>
+      <ion-button class="ion-margin-top" fill="outline" expand="block" (click)="edit()" [disabled]="!serviceEditing.name || serviceEditing.name === ''">Editar</ion-button>
+
+</ion-content>
+
