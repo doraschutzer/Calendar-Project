@@ -1,14 +1,8 @@
 export interface Customer {
     id?: number,
     name?: string,
-    telephone?: number,
-    cellphone?: number,
-    addres: {
-      state: string,
-      city: string,
-      street: string,
-      neighborhood: string,
-      number: number,
-    },
+    telephone?: string,
+    cellphone?: string,
+    address?: any,
     uid?: number
 }

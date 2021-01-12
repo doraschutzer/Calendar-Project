@@ -1,9 +1,118 @@
-<ion-header>
+<ion-header *ngIf="!modal">
   <ion-toolbar>
-    <ion-title>cliente</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Clientes
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!modal">
+  <ion-card *ngIf="!loading">
+    <ion-card-header *ngIf="!loading" (click)="collapseUpDown()">
+      <ion-card-title>Novo Cliente</ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="!collapseCard" > 
+      <ion-item>
+        <input type="text" placeholder="Nome" [(ngModel)]="customer.name" />
+      </ion-item>
+      <ion-item>
+        <input type="text" placeholder="Telefone" [(ngModel)]="customer.telephone" mask="(000) 0000-0000"/>
+      </ion-item>
+      <ion-item>
+        <input type="text" placeholder="Celular" [(ngModel)]="customer.cellphone" mask="(000) 00000-0000" [showMaskTyped]="true"/>
+      </ion-item>
+      <ion-card-header>
+        <ion-card-title>Endereço</ion-card-title>
+      </ion-card-header>
+      <ion-card-content >
+        <ion-list>        
+          <ion-item>
+            <ion-label>Estado</ion-label>
+            <ion-select (ionChange)="setState($event.target.value);">
+              <ion-select-option *ngFor="let state of states;" [value]="state">{{state}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
 
+        <ion-item>
+          <input type="text" placeholder="Cidade" [(ngModel)]="address.city" />
+        </ion-item>
+        <ion-item>
+          <input type="text" placeholder="Rua" [(ngModel)]="address.street" />
+        </ion-item>
+        <ion-item>
+          <input type="text" placeholder="Bairro" [(ngModel)]="address.neighborhood" />
+        </ion-item>
+        <ion-item>
+          <input type="number" placeholder="Número" [(ngModel)]="address.number" />
+        </ion-item>
+      </ion-card-content>
+      <ion-button class="ion-margin-top" fill="outline" expand="block" (click)="addCustomer()" [disabled]="validCustomer(customer)">Adicionar</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngFor="let customer of this.authService.customers">
+    <ion-item>
+      <ion-label>
+        <h2>{{ customer.name }}</h2>
+        <p>{{ customer.telephone }}</p>
+        <p>{{ customer.cellphone }}</p>
+        <p *ngIf="customer.address">{{ customer.address | addresspipe}}</p>
+        <div class="d-flex flex-row bd-highlight">
+          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(customer)">Editar</ion-button>
+          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(customer)">Remover</ion-button>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-header translucent *ngIf="modal">
+  <ion-toolbar>
+    <ion-title>Editar Cliente</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen *ngIf="modal">
+  <ion-item>
+    <input type="text" placeholder="Nome" [(ngModel)]="customerEditing.name" />
+  </ion-item>
+  <ion-item>
+    <input type="text" placeholder="Telefone" [(ngModel)]="customerEditing.telephone" mask="(000) 0000-0000"/>
+  </ion-item>
+  <ion-item>
+    <input type="text" placeholder="Celular" [(ngModel)]="customerEditing.cellphone" mask="(000) 00000-0000" [showMaskTyped]="true"/>
+  </ion-item>
+  <ion-card-header>
+    <ion-card-title>Endereço</ion-card-title>
+  </ion-card-header>
+  <ion-card-content >
+    <ion-list>        
+      <ion-item>
+        <ion-label>Estado</ion-label>
+        <ion-select (ionChange)="setState(addressEditing, $event.target.value);">
+          <ion-select-option *ngFor="let state of states;" [value]="state">{{state}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <ion-item>
+      <input type="text" placeholder="Cidade" [(ngModel)]="addressEditing.city" />
+    </ion-item>
+    <ion-item>
+      <input type="text" placeholder="Rua" [(ngModel)]="addressEditing.street" />
+    </ion-item>
+    <ion-item>
+      <input type="text" placeholder="Bairro" [(ngModel)]="addressEditing.neighborhood" />
+    </ion-item>
+    <ion-item>
+      <input type="number" placeholder="Número" [(ngModel)]="addressEditing.number" />
+    </ion-item>
+  </ion-card-content>
+  <ion-button class="ion-margin-top" fill="outline" expand="block" (click)="edit()" 
+  [disabled]="validCustomer(customerEditing)">Editar</ion-button>
 </ion-content>

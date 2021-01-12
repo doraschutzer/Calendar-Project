@@ -34,7 +34,6 @@ export class HomePage implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log("OK");
     this.userIsConnected();
     this.resetEvents();
   }
