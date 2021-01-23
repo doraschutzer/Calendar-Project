@@ -14,6 +14,7 @@ export class AuthService {
   public customers = [];
   public uid: any;
   private SERVICE_PATH = 'services/';
+  private CUSTOMER_PATH = 'customers/';
   
   constructor(
     private auth: AngularFireAuth,
@@ -46,12 +47,20 @@ export class AuthService {
         switch(route) {
           case 'LOGIN': {
             router.navigateByUrl('/menu/home');
+            break;
           }
           case 'SERVICE': {
             this.listServices();
+            break;
           }
           case 'CUSTOMER': {
             this.listCustomers();
+            break;
+          }
+          case 'HOME': {
+            this.listServices();
+            this.listCustomers();
+            break;
           }
         }
       } else if ( route != 'LOGIN' ) {
@@ -102,12 +111,12 @@ export class AuthService {
   saveOrUpdateCustomer(customer: Customer) {
     return new Promise<void>((resolve, reject) => {
       if (customer.id) {
-        this.db.list(this.SERVICE_PATH)
+        this.db.list(this.CUSTOMER_PATH)
           .update(customer.id.toString(), customer)
           .then(() => resolve())
           .catch((e) => reject(e));
       } else {
-        return this.db.list(this.SERVICE_PATH)
+        return this.db.list(this.CUSTOMER_PATH)
           .push(customer)
           .then(() => resolve());
       }
@@ -115,7 +124,7 @@ export class AuthService {
   }
 
   async listCustomers() {
-    this.db.list(this.SERVICE_PATH, ref => ref.orderByChild('uid').equalTo(this.uid))
+    this.db.list(this.CUSTOMER_PATH, ref => ref.orderByChild('uid').equalTo(this.uid))
     .snapshotChanges()
     .subscribe(res => {
       this.customers = [];
@@ -125,10 +134,10 @@ export class AuthService {
         this.customers.push(customer as Customer);
       });
     });
-    return this.services;
+    return this.customers;
   }
 
   removeCustomer(customer: Customer) {
-    this.db.list(this.SERVICE_PATH).remove(customer.id.toString());
+    this.db.list(this.CUSTOMER_PATH).remove(customer.id.toString());
   }
 }

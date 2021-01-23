@@ -41,6 +41,7 @@ export class CustomerPage implements OnInit {
   }
 
   setState(address: Address, valor: string){
+    console.log(address);
     address.state = valor;
   }
 

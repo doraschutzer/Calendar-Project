@@ -19,10 +19,10 @@
         <input type="text" placeholder="Nome" [(ngModel)]="customer.name" />
       </ion-item>
       <ion-item>
-        <input type="text" placeholder="Telefone" [(ngModel)]="customer.telephone" mask="(000) 0000-0000"/>
+        <input type="text" placeholder="Telefone" [(ngModel)]="customer.telephone" mask="(00) 00000-0000"/>
       </ion-item>
       <ion-item>
-        <input type="text" placeholder="Celular" [(ngModel)]="customer.cellphone" mask="(000) 00000-0000" [showMaskTyped]="true"/>
+        <input type="text" placeholder="Celular" [(ngModel)]="customer.cellphone" mask="(00) 00000-0000" [showMaskTyped]="true"/>
       </ion-item>
       <ion-card-header>
         <ion-card-title>Endereço</ion-card-title>
@@ -31,7 +31,7 @@
         <ion-list>        
           <ion-item>
             <ion-label>Estado</ion-label>
-            <ion-select (ionChange)="setState($event.target.value);">
+            <ion-select (ionChange)="setState(customer,$event.target.value);">
               <ion-select-option *ngFor="let state of states;" [value]="state">{{state}}</ion-select-option>
             </ion-select>
           </ion-item>
@@ -60,7 +60,11 @@
         <h2>{{ customer.name }}</h2>
         <p>{{ customer.telephone }}</p>
         <p>{{ customer.cellphone }}</p>
-        <p *ngIf="customer.address">{{ customer.address | addresspipe}}</p>
+        <p *ngIf="customer.address">
+          {{ customer.address.state }} - {{ customer.address.city }}
+          <br>
+          {{ customer.address.street }}, {{ customer.address.neighborhood }}, {{ customer.address.number }}
+        </p>
         <div class="d-flex flex-row bd-highlight">
           <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(customer)">Editar</ion-button>
           <ion-button size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(customer)">Remover</ion-button>
