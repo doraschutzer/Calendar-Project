@@ -26,6 +26,11 @@ export class MenuPage implements OnInit {
       url: '/menu/customer',
       icon: 'person-outline'
     },
+    {
+      title: 'Faturamento',
+      url: '/menu/finance',
+      icon: 'cash-outline'
+    },
   ];
   private selectedPath = '';
   private loading: any;

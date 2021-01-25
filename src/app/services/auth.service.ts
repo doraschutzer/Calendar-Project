@@ -4,6 +4,7 @@ import { User } from './../interfaces/user';
 import { Service } from '../interfaces/service';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Customer } from '../interfaces/customer';
+import { Event } from '../interfaces/event';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,14 @@ export class AuthService {
   public currentUser: any;
   public services = [];
   public customers = [];
+  public events = [];
+  public totalConfirmedEvents = 0;
+  public totalNotConfirmedEvents = 0;
+  public totalValue = 0;
   public uid: any;
   private SERVICE_PATH = 'services/';
   private CUSTOMER_PATH = 'customers/';
+  private EVENT_PATH = 'events/';
   
   constructor(
     private auth: AngularFireAuth,
@@ -60,6 +66,11 @@ export class AuthService {
           case 'HOME': {
             this.listServices();
             this.listCustomers();
+            this.listEvents(new Date());
+            break;
+          }
+          case 'FINANCE': {
+            this.listEvents(new Date());
             break;
           }
         }
@@ -130,6 +141,7 @@ export class AuthService {
       this.customers = [];
       res.forEach(element => {
         var customer: any = element.payload.toJSON();
+        console.log(customer);
         customer.id = element.key;
         this.customers.push(customer as Customer);
       });
@@ -139,5 +151,75 @@ export class AuthService {
 
   removeCustomer(customer: Customer) {
     this.db.list(this.CUSTOMER_PATH).remove(customer.id.toString());
+  }
+
+  async listEvents(dateFilter: Date) {
+    this.totalConfirmedEvents = 0;
+    this.totalValue = 0;
+    this.totalNotConfirmedEvents = 0;
+    this.db.list(this.EVENT_PATH, ref => ref.orderByChild('uid').equalTo(this.uid))
+    .snapshotChanges()
+    .subscribe(res => {
+      this.events = [];
+      res.forEach(element => {
+        var event: any = element.payload.toJSON();
+        event.id = element.key;
+        let startDate: Date = new Date(event.startTime);
+        let endDate: Date = new Date(event.endTime);
+        if ( ( startDate.getDate() == dateFilter.getDate() &&
+                startDate.getMonth() == dateFilter.getMonth() && 
+                  startDate.getFullYear() == dateFilter.getFullYear() ) || 
+            ( endDate.getDate() == dateFilter.getDate() &&
+                endDate.getMonth() == dateFilter.getMonth() && 
+                  endDate.getFullYear() == dateFilter.getFullYear() ) ) {
+          if ( event.confirm ) {
+            this.totalConfirmedEvents++;
+            this.totalValue = event.total;
+          } else {
+            this.totalNotConfirmedEvents++;
+          }
+          this.events.push(event as Event); 
+        }
+      });
+      this.events.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+    });
+    return this.events;
+
+
+    // let items = this.db.list(this.EVENT_PATH, ref => 
+    //   ref.orderByChild('uid').equalTo(this.uid)).valueChanges();
+    //   items.subscribe( value => {
+    //     this.events = [];
+    //     value.forEach(element => {
+    //       console.log(element);
+    //     let event: any = element;
+    //     let date: Date = new Date(event.startTime);
+    //     if ( date.getDate() == dateFilter.getDate() &&
+    //           date.getMonth() == dateFilter.getMonth() && 
+    //             date.getFullYear() == dateFilter.getFullYear() ) {
+    //       this.events.push(element as Event); 
+    //     }
+    //     this.events.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+    //   })
+    // });
+  }
+
+  removeEvent(event: Event) {
+    this.db.list(this.EVENT_PATH).remove(event.id.toString());
+  }
+
+  saveOrUpdateEvent(event: Event) {
+    return new Promise<void>((resolve, reject) => {
+      if (event.id) {
+        this.db.list(this.EVENT_PATH)
+          .update(event.id.toString(), event)
+          .then(() => resolve())
+          .catch((e) => reject(e));
+      } else {
+        return this.db.list(this.EVENT_PATH)
+          .push(event)
+          .then(() => resolve());
+      }
+    });
   }
 }

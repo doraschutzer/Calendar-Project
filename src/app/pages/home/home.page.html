@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="!modal">
   <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
@@ -9,15 +9,39 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="!modal">
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-text color="tertiary">
+            <h5 >Data:</h5>
+          </ion-text>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          <ion-datetime min="2016" displayFormat="DD/MM/YYYY" placeholder="Selecionar Data" [(ngModel)]="date"></ion-datetime>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          <ion-button class="filter" fill="outline" expand="block" (click)="getListEvents()" [disabled]="!date">Buscar</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
   <ion-card *ngIf="!loading">
     <ion-card-header *ngIf="!loading" (click)="collapseUpDown()">
       <ion-card-title>Novo Evento</ion-card-title>
     </ion-card-header>
+    
     <ion-card-content *ngIf="!collapseCard" >
  
       <ion-item>
-        <ion-input type="text" placeholder="Título" [(ngModel)]="event.title"></ion-input>
+        <ion-input type="text" placeholder="Título" [(ngModel)]="eventSave.title"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Clientes</ion-label>
@@ -37,25 +61,21 @@
       </ion-item>
       <ion-item>
         <ion-label>Começo</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" [min]="minDate"></ion-datetime>
+        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime"></ion-datetime>
       </ion-item>
       <ion-item>
         <ion-label>Fim</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" [min]="minDate"></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label>Dia todo?</ion-label>
-        <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
+        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime"></ion-datetime>
       </ion-item>
       <ion-item>
         <ion-label>Total: {{ ( totalValue | currency:'BRL':true ) }} </ion-label>
       </ion-item>
-      <ion-button fill="outline" expand="block" (click)="addEvent()" [disabled]="event.title == ''">Adicionar Evento</ion-button>
+      <ion-button fill="outline" expand="block" (click)="addEvent()" [disabled]="!eventSave.title">Adicionar Evento</ion-button>
  
     </ion-card-content>
   </ion-card>
 
-  <calendar
+  <!-- <calendar
   [eventSource]=""
   [calendarMode]="calendar.mode"
   [currentDate]="calendar.currentDate"
@@ -67,21 +87,69 @@
   step="30"
   startingDayWeek="1"
   >
-  </calendar>
-  AAAAAAAAAAAAAA
-  <ion-list *ngFor="let event of this.eventSource">
+  </calendar> -->
+  
+  <ion-list *ngFor="let event of this.authService.events">
     <ion-item>
       <ion-label>
-        <h2>{{ event.title }}</h2>
-        <p>{{ ( event.startTime ) }}</p>
-        <!-- <div class="d-flex flex-row bd-highlight">
-          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(service)">Editar</ion-button>
-          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(service)">Remover</ion-button>
-        </div> -->
-        <!-- <p>{{ service.value | mask: '(00) 00000-0000'}}</p> -->
+        <h2>{{ event.title }} | {{ ( event.startTime | date: 'dd/MM HH:mm' ) }} - {{ ( event.endTime | date: 'dd/MM HH:mm' ) }}</h2>
+        <p *ngIf="event.customer">Cliente: {{ event.customer.name }}</p>
+        <p>Total: {{ ( event.total | currency:'BRL':true ) }}</p>
+        <div class="d-flex flex-row bd-highlight">
+          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(event)">Editar</ion-button>
+          <ion-button color="danger" size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(event)">Remover</ion-button>
+          <ion-button *ngIf="!event.confirm" color="success" size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="confirmEvent(event)">Confirmar</ion-button>
+        </div>
       </ion-label>
     </ion-item>
   </ion-list>
 
 
+</ion-content>
+
+<ion-header translucent *ngIf="modal">
+  <ion-toolbar>
+    <ion-title>Editar Cliente</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen *ngIf="modal">
+  <form [formGroup]="editForm">
+    <ion-item>
+      <input type="text" placeholder="Título" [(ngModel)]="eventEditing.title" />
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Clientes</ion-label>
+      <ion-select [(ngModel)]="eventEditing.customer" [compareWith]="eventEditing.customer?.name">
+        <ion-select-option *ngFor="let customer of this.authService.customers" [value]="customer">{{ customer.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Serviços</ion-label>
+      <ion-select formControlName="services" [(ngModel)]="eventEditing.services" multiple={true} (ionChange)="onChangeServiceOrValueEdit()">
+        <ion-select-option *ngFor="let service of this.authService.services" [value]="service">{{ service.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngFor="let service of editSelectedServicesWithoutValue; index as index">
+      <ion-label>{{ service.name }}:</ion-label>
+      <input currencyMask (change)="onChangeServiceOrValueEdit()" placeholder="Serviço {{ service.name }}" [(ngModel)]="service.value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }" />
+    </ion-item>
+    <ion-item>
+      <ion-label>Começo</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="eventEditing.startTime" [min]="minDate"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>Fim</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="eventEditing.endTime" [min]="minDate"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>Total: {{ ( eventEditing.total | currency:'BRL':true ) }} </ion-label>
+    </ion-item>
+  </form>
+  
+  <!-- <ion-button class="ion-margin-top" fill="outline" expand="block" (click)="edit()" 
+    [disabled]="validEvent(eventEditing)">Editar</ion-button> -->
 </ion-content>

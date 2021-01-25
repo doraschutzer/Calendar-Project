@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -17,7 +17,7 @@ const maskConfig: Partial<IConfig> = {
 };
 
 export const customCurrencyMaskConfig = {
-  align: "left",
+  align: "right",
   allowNegative: true,
   allowZero: true,
   decimal: ",",
@@ -35,6 +35,7 @@ export const customCurrencyMaskConfig = {
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     NgCalendarModule,
     HomePageRoutingModule,

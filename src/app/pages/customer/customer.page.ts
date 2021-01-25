@@ -94,7 +94,12 @@ export class CustomerPage implements OnInit {
   openModal(customer: Customer) {
     this.modal = true;
     this.customerEditing = customer;
-    this.addressEditing = customer.address;
+    console.log(this.customerEditing);
+    if ( customer.address ) {
+      this.addressEditing = customer.address;
+    } else {
+      this.addressEditing = {};
+    }
   }
 
   dismissModal() {
@@ -103,7 +108,7 @@ export class CustomerPage implements OnInit {
 
   async edit() {
     this.customerEditing.address = this.addressEditing;
-    this.authService.saveOrUpdateService(this.customerEditing);
+    this.authService.saveOrUpdateCustomer(this.customerEditing);
     this.getListCustomers();
     this.customerEditing = {};
     this.addressEditing = {};

@@ -1,8 +1,8 @@
 export interface Customer {
-    id?: number,
+    id?: String,
     name?: string,
     telephone?: string,
     cellphone?: string,
     address?: any,
-    uid?: number
+    uid?: String
 }

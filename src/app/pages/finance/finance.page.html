@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Faturamento
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-content>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div>
+            <ion-text color="tertiary">
+              <h5 >Data:</h5>
+            </ion-text>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div>
+            <ion-datetime min="2016" displayFormat="DD/MM/YYYY" placeholder="Selecionar Data" [(ngModel)]="date"></ion-datetime>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div>
+            <ion-button class="filter" fill="outline" expand="block" (click)="getList()" [disabled]="!date">Buscar</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-list>
+      <ion-item>
+        <ion-text>
+          <h3>Data: </h3>
+        </ion-text>
+        <ion-text color="primary">
+          <h3>&nbsp;{{ searchDate | date: 'dd/MM/yyyy' }}</h3>
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-text>
+          <h3>Eventos confirmados: </h3>
+        </ion-text>
+        <ion-text>
+          <h3>&nbsp;{{ this.authService.totalConfirmedEvents }}</h3>
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-text>
+          <h3>Eventos não confirmados: </h3>
+        </ion-text>
+        <ion-text color="danger">
+          <h3>&nbsp;{{ this.authService.totalNotConfirmedEvents  }}</h3>
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-text>
+          <h3>Valor Total: </h3>
+        </ion-text>
+        <ion-text color="success">
+          <h3>&nbsp;{{ ( this.authService.totalValue | currency:'BRL':true )  }}</h3>
+        </ion-text>
+      </ion-item>
+    </ion-list>
+    <ion-text>
+      <h4 class="not-paid">Clientes que não pagaram: </h4>
+    </ion-text>
+    <ion-list class="not-paid-list" *ngFor="let event of this.authService.events">
+      <ion-item *ngIf="event.confirm && !event.paid && event.customer">
+        <ion-text>
+          <h3>{{ event.customer.name }}&nbsp;-</h3>
+        </ion-text>
+        <ion-text color="danger">
+          <h3>&nbsp;Valor: {{ event.total | currency:'BRL':true }}</h3>
+        </ion-text>
+      </ion-item>
+    </ion-list>
+
+</ion-content>

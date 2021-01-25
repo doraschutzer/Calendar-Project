@@ -1,5 +1,5 @@
 export interface Service {
-    id?: number,
+    id?: String,
     name?: string,
     value?: number,
     uid?: number

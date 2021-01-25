@@ -33,9 +33,8 @@
         <p>{{ ( service.value | currency:'BRL':true ) }}</p>
         <div class="d-flex flex-row bd-highlight">
           <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(service)">Editar</ion-button>
-          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(service)">Remover</ion-button>
+          <ion-button color="danger" size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(service)">Remover</ion-button>
         </div>
-        <!-- <p>{{ service.value | mask: '(00) 00000-0000'}}</p> -->
       </ion-label>
     </ion-item>
   </ion-list>
