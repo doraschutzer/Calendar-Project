@@ -7,7 +7,7 @@ import { Event } from 'src/app/interfaces/event';
 import { User } from 'src/app/interfaces/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { AlertController } from '@ionic/angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -36,8 +36,10 @@ export class HomePage implements OnInit {
   modal = false;
   eventEditing: Event;
   editSelectedServices = [];
+  editSelectedServicesValue = [];
+  editServices = [];
   editSelectedServicesWithoutValue = [];
-  date: Date = new Date();
+  date: string;
   editForm: FormGroup;
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
   constructor(
@@ -51,6 +53,13 @@ export class HomePage implements OnInit {
     this.userIsConnected();
     this.resetEvents();
     this.totalValue = 0;
+  }
+
+  selectServices() {
+    this.editServices = [];
+    for ( let service of this.authService.services ) {
+      this.editServices.push(service.name);
+    }
   }
   
   async userIsConnected() {
@@ -137,21 +146,23 @@ export class HomePage implements OnInit {
   }
 
   openModal(event: Event) {
+    this.selectServices();
     this.editSelectedServices = [];
+    this.editSelectedServicesValue = [];
     this.editSelectedServicesWithoutValue = [];
     this.eventEditing = event;
     for ( let obj of Object.entries(event.services) ) {
       let service: any = obj[1];
       this.editSelectedServices.push(service.name);
-
+      this.editSelectedServicesValue.push(service.value);
+      
       if ( service.withoutValue ) {
         this.editSelectedServicesWithoutValue.push(service);
       }
+      console.log(this.editSelectedServices);
     }
+    this.onChangeServiceOrValueEdit();
     this.modal = true;
-    this.editForm = this.formBuilder.group({
-      services: this.editSelectedServicesWithoutValue,
-    });
   }
 
   dismissModal() {
@@ -159,19 +170,26 @@ export class HomePage implements OnInit {
   }
 
   onChangeServiceOrValueEdit() {
-    var self = this;
     this.eventEditing.total = 0;
+    this.eventEditing.services = [];
     this.editSelectedServicesWithoutValue = [];
-    console.log(this.editSelectedServices);
 
-    this.eventEditing.services.forEach(function (service) {
-      console.log(service);
-      if ( !service.value || service.withoutValue ) {
-        service.withoutValue = true;
-        self.editSelectedServicesWithoutValue.push(service);
+    for ( let service1 of this.authService.services ) {
+      let index = 0;
+      for ( let service2 of this.editSelectedServices ) {
+        if ( service1.name === service2 ) {
+          this.eventEditing.services.push(service1);
+          
+          if ( !service1.value || service1.withoutValue ) {
+            service1.withoutValue = true;
+            service1.value = this.editSelectedServicesValue[index];
+            this.editSelectedServicesWithoutValue.push(service1);
+          }
+          this.eventEditing.total += service1.value;
+          index++;
+        }
       }
-      self.eventEditing.total += service.value;
-    });
+    }
   }
 
   async confirmEvent(event: Event) {
@@ -223,6 +241,16 @@ export class HomePage implements OnInit {
       });
     }
   }
+
+  edit() {
+    console.log(this.eventEditing);
+  }
+
+  compareWithFn = (o1, o2) => {
+    return o1.name === this.eventEditing.customer.name;
+  };
+
+  compareWith = this.compareWithFn;
 
 
 }

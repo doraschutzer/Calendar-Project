@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./finance.page.scss'],
 })
 export class FinancePage implements OnInit {
-  date: Date = new Date();
+  date: string;
   searchDate: Date = new Date();
 
   constructor(
@@ -26,7 +26,7 @@ export class FinancePage implements OnInit {
 
   async getList() {
     await this.authService.listEvents(new Date(this.date));
-    this.searchDate = this.date;
+    this.searchDate = new Date(this.date);
   }
 
   // calculateInformations() {

@@ -141,7 +141,6 @@ export class AuthService {
       this.customers = [];
       res.forEach(element => {
         var customer: any = element.payload.toJSON();
-        console.log(customer);
         customer.id = element.key;
         this.customers.push(customer as Customer);
       });
