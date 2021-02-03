@@ -31,7 +31,7 @@
         <ion-list>        
           <ion-item>
             <ion-label>Estado</ion-label>
-            <ion-select (ionChange)="setState(customer,$event.target.value);">
+            <ion-select [(ngModel)]="address.state">
               <ion-select-option *ngFor="let state of states;" [value]="state">{{state}}</ion-select-option>
             </ion-select>
           </ion-item>
@@ -99,7 +99,7 @@
     <ion-list>        
       <ion-item>
         <ion-label>Estado</ion-label>
-        <ion-select (ionChange)="setState(addressEditing, $event.target.value);">
+        <ion-select [(ngModel)]="addressEditing.state">
           <ion-select-option *ngFor="let state of states;" [value]="state">{{state}}</ion-select-option>
         </ion-select>
       </ion-item>

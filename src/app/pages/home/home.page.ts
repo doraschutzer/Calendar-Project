@@ -121,6 +121,7 @@ export class HomePage implements OnInit {
   }
 
   async getListEvents() {
+    if (!this.date) this.date = new Date().toLocaleString();
     await this.authService.listEvents(new Date(this.date));
   }
 
@@ -181,8 +182,10 @@ export class HomePage implements OnInit {
           this.eventEditing.services.push(service1);
           
           if ( !service1.value || service1.withoutValue ) {
+            if ( !service1.value  ) {
+              service1.value = this.editSelectedServicesValue[index];
+            }
             service1.withoutValue = true;
-            service1.value = this.editSelectedServicesValue[index];
             this.editSelectedServicesWithoutValue.push(service1);
           }
           this.eventEditing.total += service1.value;
@@ -239,11 +242,29 @@ export class HomePage implements OnInit {
           }
         ],
       });
+      await alert.present();
     }
   }
 
   edit() {
-    console.log(this.eventEditing);
+    this.eventEditing.services = [];
+    for ( let service1 of this.authService.services ) {
+      for ( let service2 of this.editSelectedServices ) {
+        if ( service1.name === service2 ) {
+
+          for ( let service3 of this.editSelectedServicesWithoutValue ) {
+            if ( service2 === service3.name ) {
+              service1.value = service3.value;
+            }
+          }
+          this.eventEditing.services.push(service1);
+        }
+      }
+    }
+    this.authService.saveOrUpdateEvent(this.eventEditing);
+    this.eventEditing = {};
+    this.getListEvents();
+    this.dismissModal();
   }
 
   compareWithFn = (o1, o2) => {
@@ -251,6 +272,27 @@ export class HomePage implements OnInit {
   };
 
   compareWith = this.compareWithFn;
+
+  async confirmPaidEvent(event) {
+    const alert = await this.alertCtrl.create({
+      header: 'Evento Concluído',
+      message: 'Este evento foi pago pelo cliente?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Sim',
+          handler: data => {
+            event.paid = true;
+            this.authService.saveOrUpdateEvent(event);
+          }
+        }
+      ],
+    });
+    await alert.present();
+  }
 
 
 }

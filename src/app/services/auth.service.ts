@@ -173,7 +173,7 @@ export class AuthService {
                   endDate.getFullYear() == dateFilter.getFullYear() ) ) {
           if ( event.confirm ) {
             this.totalConfirmedEvents++;
-            this.totalValue = event.total;
+            this.totalValue += event.total;
           } else {
             this.totalNotConfirmedEvents++;
           }

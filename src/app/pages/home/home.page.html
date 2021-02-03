@@ -85,6 +85,7 @@
           <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(event)">Editar</ion-button>
           <ion-button color="danger" size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(event)">Remover</ion-button>
           <ion-button *ngIf="!event.confirm" color="success" size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="confirmEvent(event)">Confirmar</ion-button>
+          <ion-button *ngIf="event.confirm && !event.paid" color="success" size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="confirmPaidEvent(event)">Pago</ion-button>
         </div>
       </ion-label>
     </ion-item>
@@ -108,7 +109,7 @@
     
     <ion-item>
       <ion-label>Clientes</ion-label>
-      <ion-select [(ngModel)]="eventEditing.customer.name" [compareWith]="compareWith">
+      <ion-select [(ngModel)]="eventEditing.customer" [compareWith]="compareWith">
         <ion-select-option *ngFor="let customer of this.authService.customers" [value]="customer">{{ customer.name }}</ion-select-option>
       </ion-select>
     </ion-item>

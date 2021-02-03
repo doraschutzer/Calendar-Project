@@ -38,6 +38,7 @@ export class ServicePage implements OnInit {
     this.service.uid = this.authService.uid;
     this.authService.saveOrUpdateService(this.service);
     this.listServices();
+    this.service = {};
   }
 
   async listServices() {

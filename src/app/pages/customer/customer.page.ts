@@ -40,11 +40,6 @@ export class CustomerPage implements OnInit {
     this.collapseCard = !this.collapseCard;
   }
 
-  setState(address: Address, valor: string){
-    console.log(address);
-    address.state = valor;
-  }
-
   validCustomer(customer: Customer){
     return (!customer || this.validName(customer) || this.validPhone(customer));
   }
@@ -54,8 +49,8 @@ export class CustomerPage implements OnInit {
   }
 
   validPhone(customer: Customer){
-    return (!customer.telephone || customer.telephone == "") ||
-    (!customer.cellphone || customer.cellphone == "");
+    return (!customer.telephone || customer.telephone === "") &&
+    (!customer.cellphone || customer.cellphone === "");
   }
 
   addCustomer(){
@@ -63,6 +58,8 @@ export class CustomerPage implements OnInit {
     this.customer.uid = this.authService.uid;
     this.customer.address = this.address;
     this.authService.saveOrUpdateCustomer(this.customer);
+    this.customer = {};
+    this.address = {};
    }
   }
 
