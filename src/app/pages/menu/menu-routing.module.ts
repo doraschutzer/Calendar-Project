@@ -23,7 +23,11 @@ const routes: Routes = [
       {
         path: 'finance',
         loadChildren: () => import('../finance/finance.module').then( m => m.FinancePageModule)
-      }
+      },
+      {
+        path: 'spent',
+        loadChildren: () => import('../spent/spent.module').then( m => m.SpentPageModule)
+      },
     ]
   },
   // {

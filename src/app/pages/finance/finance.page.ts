@@ -25,14 +25,8 @@ export class FinancePage implements OnInit {
   }
 
   async getList() {
-    await this.authService.listEvents(new Date(this.date));
+    await this.authService.listEventsByMonth(new Date(this.date));
+    await this.authService.listSpents(new Date(this.date));
     this.searchDate = new Date(this.date);
   }
-
-  // calculateInformations() {
-  //   this.authService.forEach(element => {
-  //     if 
-  //   });
-  // }
-
 }

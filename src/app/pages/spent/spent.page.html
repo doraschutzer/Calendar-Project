@@ -1,0 +1,105 @@
+<ion-header *ngIf="!modal">
+    <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Despesas
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!modal">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-text color="tertiary">
+            <h5 >Mês/Ano:</h5>
+          </ion-text>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          <ion-datetime min="2016" displayFormat="MM/YYYY" pickerFormat="MM/YYYY" placeholder="Selecionar Data" [(ngModel)]="date"></ion-datetime>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div>
+          <ion-button class="filter" fill="outline" expand="block" (click)="listSpents()" [disabled]="!date">Buscar</ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card *ngIf="!loading">
+    <ion-item>
+      <ion-text>
+        <h3>Mês/Ano: </h3>
+      </ion-text>
+      <ion-text color="primary">
+        <h3>&nbsp;{{ date | date: 'MM/yyyy' }}</h3>
+      </ion-text>
+    </ion-item>
+
+    <ion-card-header *ngIf="!loading" (click)="collapseUpDown()">
+      <ion-card-title>Nova Despesa</ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="!collapseCard" >
+ 
+      <ion-item>
+        <input type="text" placeholder="Nome" [(ngModel)]="spent.name" />
+      </ion-item>
+      <ion-item>
+        <input currencyMask placeholder="Valor" [(ngModel)]="spent.value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"/>
+      </ion-item>
+      <ion-item>
+        <ion-label>Data</ion-label>
+        <ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="spent.date"></ion-datetime>
+      </ion-item>
+      <ion-button class="ion-margin-top" fill="outline" expand="block" (click)="addEvent()" [disabled]="!spent.name || spent.name === '' || !spent.value || spent.value == 0">Adicionar</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  
+
+  <ion-list *ngFor="let spent of this.authService.spents">
+    <ion-item>
+      <ion-label>
+        <h2>{{ spent.name }}</h2>
+        <p>{{ ( spent.value | currency:'BRL':true ) }}</p>
+        <p>{{ ( spent.date | date: 'dd/MM/yyyy' ) }}</p>
+        <div class="d-flex flex-row bd-highlight">
+          <ion-button size="small" slot="icon-only" name="star" class="ion-margin-top" (click)="openModal(spent)">Editar</ion-button>
+          <ion-button color="danger" size="small" slot="icon-only" name="star" class="ion-margin-start ion-margin-top" (click)="remove(spent)">Remover</ion-button>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-header translucent *ngIf="modal">
+  <ion-toolbar>
+    <ion-title>Editar Serviço</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen *ngIf="modal">
+
+      <ion-item>
+        <input type="text" placeholder="Nome" [(ngModel)]="spentEditing.name" />
+      </ion-item>
+      <ion-item>
+        <input currencyMask placeholder="Valor" [(ngModel)]="spentEditing.value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"/>
+      </ion-item>
+      <ion-item>
+        <ion-label>Data</ion-label>
+        <ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" [(ngModel)]="spentEditing.date"></ion-datetime>
+      </ion-item>
+      <ion-button class="ion-margin-top" fill="outline" expand="block" (click)="edit()" [disabled]="!this.spentEditing.name || this.spentEditing.name === '' || 
+      !this.spentEditing.value || this.spentEditing.value == 0">Editar</ion-button>
+
+</ion-content>
+

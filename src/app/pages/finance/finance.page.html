@@ -17,13 +17,13 @@
         <ion-col>
           <div>
             <ion-text color="tertiary">
-              <h5 >Data:</h5>
+              <h5 >Mês/Ano:</h5>
             </ion-text>
           </div>
         </ion-col>
         <ion-col>
           <div>
-            <ion-datetime min="2016" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" placeholder="Selecionar Data" [(ngModel)]="date"></ion-datetime>
+            <ion-datetime min="2016" displayFormat="MM/YYYY" pickerFormat="MM/YYYY" placeholder="Selecionar Data" [(ngModel)]="date"></ion-datetime>
           </div>
         </ion-col>
         <ion-col>
@@ -37,10 +37,10 @@
     <ion-list>
       <ion-item>
         <ion-text>
-          <h3>Data: </h3>
+          <h3>Mês/Ano: </h3>
         </ion-text>
         <ion-text color="primary">
-          <h3>&nbsp;{{ searchDate | date: 'dd/MM/yyyy' }}</h3>
+          <h3>&nbsp;{{ searchDate | date: 'MM/yyyy' }}</h3>
         </ion-text>
       </ion-item>
       <ion-item>
@@ -61,10 +61,26 @@
       </ion-item>
       <ion-item>
         <ion-text>
-          <h3>Valor Total: </h3>
+          <h3>Total Realizado: </h3>
         </ion-text>
         <ion-text color="success">
-          <h3>&nbsp;{{ ( this.authService.totalValue | currency:'BRL':true )  }}</h3>
+          <h3>&nbsp;{{ ( this.authService.totalValueWorked | currency:'BRL':true )  }}</h3>
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-text>
+          <h3>Despesa Total: </h3>
+        </ion-text>
+        <ion-text color="warning">
+          <h3>&nbsp;{{ ( this.authService.totalValueSpent | currency:'BRL':true )  }}</h3>
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-text>
+          <h3>Valor Final: </h3>
+        </ion-text>
+        <ion-text color="primary">
+          <h3>&nbsp;{{ ( ( this.authService.totalValueWorked - this.authService.totalValueSpent ) | currency:'BRL':true )  }}</h3>
         </ion-text>
       </ion-item>
     </ion-list>

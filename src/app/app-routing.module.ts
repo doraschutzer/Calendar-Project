@@ -11,10 +11,6 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./pages/menu/menu.module').then( m => m.MenuPageModule)
   },
-  // {
-  //   path: 'home',
-  //   loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  // },
   {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
@@ -22,25 +18,7 @@ const routes: Routes = [
   {
     path: 'signin',
     loadChildren: () => import('./pages/signin/signin.module').then( m => m.SigninPageModule)
-  },
-  // {
-  //   path: 'customer',
-  //   loadChildren: () => import('./pages/customer/customer.module').then( m => m.CustomerPageModule)
-  // },
-  // {
-  //   path: 'finance',
-  //   loadChildren: () => import('./pages/finance/finance.module').then( m => m.FinancePageModule)
-  // },
-
-
-  // {
-  //   path: 'service',
-  //   loadChildren: () => import('./pages/service/service.module').then( m => m.ServicePageModule)
-  // },
-  // {
-  //   path: '',
-  //   loadChildren: () => import('./pages/menu/menu.module').then( m => m.MenuPageModule)
-  // },
+  }
 ];
 
 @NgModule({

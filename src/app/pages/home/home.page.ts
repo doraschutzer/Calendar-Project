@@ -53,6 +53,7 @@ export class HomePage implements OnInit {
     this.userIsConnected();
     this.resetEvents();
     this.totalValue = 0;
+    this.date = new Date().toISOString();
   }
 
   selectServices() {
@@ -160,7 +161,6 @@ export class HomePage implements OnInit {
       if ( service.withoutValue ) {
         this.editSelectedServicesWithoutValue.push(service);
       }
-      console.log(this.editSelectedServices);
     }
     this.onChangeServiceOrValueEdit();
     this.modal = true;
@@ -292,6 +292,14 @@ export class HomePage implements OnInit {
       ],
     });
     await alert.present();
+  }
+
+  disableNewEvent() {
+    return !this.eventSave.title || ( new Date(this.event.endTime) < new Date(this.event.startTime) );
+  }
+
+  disableEditEvent() {
+    return !this.eventEditing.title || ( new Date(this.eventEditing.endTime) < new Date(this.eventEditing.startTime) );
   }
 
 

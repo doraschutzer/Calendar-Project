@@ -29,7 +29,12 @@ export class MenuPage implements OnInit {
     {
       title: 'Faturamento',
       url: '/menu/finance',
-      icon: 'cash-outline'
+      icon: 'trending-up-outline'
+    },
+    {
+      title: 'Despesas',
+      url: '/menu/spent',
+      icon: 'card-outline'
     },
   ];
   private selectedPath = '';
